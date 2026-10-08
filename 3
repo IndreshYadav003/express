@@ -1,0 +1,109 @@
+const express = require("express");
+const app = express();
+const PORT = 3000;
+// Assume this is our database
+const properties = [
+    {
+        id: 1,
+        name: "Green Valley Residency",
+        location: "Bangalore",
+        type: "2BHK",
+        price: 5000000
+    },
+    {
+        id: 2,
+        name: "Royal Heights",
+        location: "Bangalore",
+        type: "3BHK",
+        price: 7500000
+    },
+    {
+        id: 3,
+        name: "Lake View Apartments",
+        location: "Mumbai",
+        type: "2BHK",
+        price: 6500000
+    },
+    {
+        id: 4,
+        name: "Sunrise Residency",
+        location: "Delhi",
+        type: "1BHK",
+        price: 3500000
+    },
+    {
+        id: 5,
+        name: "Palm Residency",
+        location: "Bangalore",
+        type: "1BHK",
+        price: 4000000
+    }
+];
+
+// GET ALL PROPERTIES `
+// http://localhost:3000/api/properties
+app.get("/api/properties", (req, res) => {
+
+    const {
+        location,
+        type,
+        minPrice,
+        maxPrice
+    } = req.query;
+
+    let result = properties;
+
+    // Filter by location   =>
+// http://localhost:3000/api/properties?location=Bangalore
+    if (location) {
+        result = result.filter(property =>
+            property.location.toLowerCase() === location.toLowerCase()
+        );
+    }
+
+    // Filter by property type
+    // http://localhost:3000/api/properties?location=Bangalore&type=2BHK
+    if (type) {
+        result = result.filter(property =>
+            property.type.toLowerCase() === type.toLowerCase()
+        );
+    }
+
+    // Filter by minimum price
+    // http://localhost:3000/api/properties?minPrice=4000000
+    if (minPrice) {
+        result = result.filter(property =>
+            property.price >= Number(minPrice)
+        );
+    }
+
+    // Filter by maximum price
+    // http://localhost:3000/api/properties?maxPrice=6000000
+    if (maxPrice) {
+        result = result.filter(property =>
+            property.price <= Number(maxPrice)
+        );
+    }
+
+    res.status(200).json({
+        success: true,
+        count: result.length,
+        data: result
+    });
+});
+
+// HOME ROUTE
+app.get("/", (req, res) => {
+    res.send("Real Estate API is running");
+});
+
+// SERVER
+app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+});
+```
+http://localhost:3000/api/properties
+http://localhost:3000/api/properties?location=Bangalore
+http://localhost:3000/api/properties?location=Bangalore&type=2BHK
+
+```
