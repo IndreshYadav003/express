@@ -1,0 +1,90 @@
+const express = require("express");
+
+const app = express();
+
+const PORT = 3000;
+
+app.use(express.json());
+
+
+// ==========================================
+// HOME
+// ==========================================
+
+app.get("/", (req, res) => {
+
+    res.send("Real Estate API is running");
+
+});
+
+
+// ==========================================
+// GET SPECIFIC PROPERTY
+// Route Parameter
+// ==========================================
+
+app.get("/api/properties/:id", (req, res) => {
+
+    const id = req.params.id;
+
+    res.json({
+        success: true,
+        message: "Specific property requested",
+        propertyId: id
+    });
+
+});
+
+
+// ==========================================
+// SEARCH/FILTER PROPERTIES
+// Query Parameters
+// ==========================================
+
+app.get("/api/properties", (req, res) => {
+
+    const location = req.query.location;
+    const type = req.query.type;
+    const minPrice = req.query.minPrice;
+    const maxPrice = req.query.maxPrice;
+
+    res.json({
+        success: true,
+        filters: {
+            location: location,
+            type: type,
+            minPrice: minPrice,
+            maxPrice: maxPrice
+        }
+    });
+
+});
+
+
+// ==========================================
+// 404
+// ==========================================
+
+app.use((req, res) => {
+
+    res.status(404).json({
+        success: false,
+        message: "Route not found"
+    });
+
+});
+
+
+// ==========================================
+// START SERVER
+// ==========================================
+
+app.listen(PORT, () => {
+
+    console.log(`Server running at http://localhost:${PORT}`);
+
+});
+//http://localhost:3000/api/properties/101
+//http://localhost:3000/api/properties/500
+//http://localhost:3000/api/properties?location=Bangalore&type=2BHK
+//http://localhost:3000/api/properties?location=Bangalore&type=2BHK&minPrice=500000&maxPrice=1000000
