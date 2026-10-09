@@ -1,0 +1,46 @@
+
+const express = require("express");
+
+const router = express.Router();
+
+// Middleware runs only for requests
+// that reach this mounted property router.
+router.use((req, res, next) => {
+    console.log("Property router middleware executed");
+    next();
+});
+
+// GET /api/properties
+router.get("/", (req, res) => {
+    res.json({
+        success: true,
+        message: "All properties fetched",
+        properties: [
+            {
+                id: 1,
+                name: "Green Valley Residency",
+                location: "Bangalore",
+                type: "2BHK",
+                price: 5000000
+            },
+            {
+                id: 2,
+                name: "Royal Heights",
+                location: "Bangalore",
+                type: "3BHK",
+                price: 7500000
+            }
+        ]
+    });
+});
+
+// GET /api/properties/1
+router.get("/:id", (req, res) => {
+    res.json({
+        success: true,
+        message: "Property details fetched",
+        propertyId: req.params.id
+    });
+});
+
+module.exports = router;
