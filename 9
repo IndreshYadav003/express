@@ -1,0 +1,77 @@
+
+const express = require("express");
+
+const app = express();
+const PORT = 3000;
+
+// Sample property data
+const properties = [
+    {
+        id: 1,
+        name: "Green Valley Residency",
+        location: "Bangalore",
+        type: "2BHK",
+        price: 5000000
+    },
+    {
+        id: 2,
+        name: "Royal Heights",
+        location: "Bangalore",
+        type: "3BHK",
+        price: 7500000
+    }
+];
+
+// Normal route: get all properties
+app.get("/api/properties", (req, res) => {
+    res.json({
+        success: true,
+        properties: properties
+    });
+});
+
+// Get one property by ID
+app.get("/api/properties/:id", (req, res, next) => {
+    const propertyId = Number(req.params.id);
+
+    // Validate the ID
+    if (!Number.isInteger(propertyId) || propertyId <= 0) {
+        const error = new Error("Invalid property ID");
+        error.status = 400;
+        return next(error);
+    }
+
+    const property = properties.find(
+        (item) => item.id === propertyId
+    );
+
+    // Property doesn't exist
+    if (!property) {
+        const error = new Error("Property not found");
+        error.status = 404;
+        return next(error);
+    }
+
+    res.json({
+        success: true,
+        property: property
+    });
+});
+
+// Error-handling middleware
+// Register it AFTER the routes.
+app.use((err, req, res, next) => {
+    console.error("Error:", err.message);
+
+    const statusCode = err.status || 500;
+
+    res.status(statusCode).json({
+        success: false,
+        message: err.message || "Internal server error"
+    });
+});
+
+// Start server
+app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+});
