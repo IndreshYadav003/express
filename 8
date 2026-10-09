@@ -1,0 +1,61 @@
+
+const express = require("express");
+
+const app = express();
+const PORT = 3000;
+
+// Custom middleware: logs every incoming request
+function loggerMiddleware(req, res, next) {
+    console.log("----- New Request -----");
+    console.log("Method:", req.method);
+    console.log("URL:", req.url);
+    console.log("Time:", new Date().toLocaleTimeString());
+
+    // Continue to the next middleware or route
+    next();
+}
+
+// Register custom middleware
+app.use(loggerMiddleware);
+
+// Home route
+app.get("/", (req, res) => {
+    res.send("Welcome to the Real Estate API!");
+});
+
+// Get all properties
+app.get("/api/properties", (req, res) => {
+    res.json({
+        success: true,
+        message: "All properties fetched successfully",
+        properties: [
+            {
+                id: 1,
+                name: "Green Valley Residency",
+                location: "Bangalore",
+                type: "2BHK",
+                price: 5000000
+            },
+            {
+                id: 2,
+                name: "Royal Heights",
+                location: "Bangalore",
+                type: "3BHK",
+                price: 7500000
+            }
+        ]
+    });
+});
+
+// Get one property by ID
+app.get("/api/properties/:id", (req, res) => {
+    res.json({
+        success: true,
+        propertyId: req.params.id
+    });
+});
+
+// Start the server
+app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+});
