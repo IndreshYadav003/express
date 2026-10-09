@@ -1,0 +1,55 @@
+
+const express = require("express");
+
+const app = express();
+const PORT = 3000;
+
+// Simulate an asynchronous database operation
+function getProperties() {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve([
+                {
+                    id: 1,
+                    name: "Green Valley Residency",
+                    location: "Bangalore",
+                    price: 5000000
+                },
+                {
+                    id: 2,
+                    name: "Royal Heights",
+                    location: "Bangalore",
+                    price: 7500000
+                }
+            ]);
+        }, 500);
+    });
+}
+
+// Async API route
+app.get("/api/properties", async (req, res, next) => {
+    try {
+        const properties = await getProperties();
+
+        res.json({
+            success: true,
+            properties: properties
+        });
+    } catch (error) {
+        next(error);
+    }
+});
+
+// Error-handling middleware
+app.use((err, req, res, next) => {
+    console.error(err);
+
+    res.status(500).json({
+        success: false,
+        message: "Something went wrong while fetching properties"
+    });
+});
+
+app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+});
